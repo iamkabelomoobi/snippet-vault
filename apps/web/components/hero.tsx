@@ -1,8 +1,23 @@
-import { Code2, Zap, Shield, Users } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import Link from 'next/link';
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/components/auth-provider";
+import { Code2, Zap, Shield, Users } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export function Hero() {
+  const router = useRouter();
+  const { user, loading } = useAuth();
+
+  let getStartedHref = "/register";
+  if (!loading && user) {
+    if (user.role === "USER") {
+      getStartedHref = "/create";
+    } else if (user.role === "ADMIN") {
+      getStartedHref = "/admin";
+    }
+  }
+
   return (
     <section className="bg-gradient-to-br from-background via-background to-muted/50 py-20">
       <div className="container mx-auto px-4">
@@ -11,49 +26,14 @@ export function Hero() {
             Organize Your Code Snippets
           </h1>
           <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-            Save, manage, and share your code snippets with a beautiful, modern interface. 
-            Perfect for developers who want to keep their code organized and accessible.
+            Save, manage, and share your code snippets with a beautiful, modern
+            interface. Perfect for developers who want to keep their code
+            organized and accessible.
           </p>
-          
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
             <Button asChild size="lg" className="text-lg px-8">
-              <Link href="/register">Get Started Free</Link>
+              <Link href={getStartedHref}>Get Started Free</Link>
             </Button>
-            <Button asChild variant="outline" size="lg" className="text-lg px-8">
-              <Link href="#features">Learn More</Link>
-            </Button>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8" id="features">
-            <div className="text-center p-6 rounded-lg bg-card border">
-              <div className="h-12 w-12 bg-primary/10 rounded-lg flex items-center justify-center mx-auto mb-4">
-                <Code2 className="h-6 w-6 text-primary" />
-              </div>
-              <h3 className="text-xl font-semibold mb-2">Smart Organization</h3>
-              <p className="text-muted-foreground">
-                Organize snippets by language, tags, and categories for easy discovery.
-              </p>
-            </div>
-            
-            <div className="text-center p-6 rounded-lg bg-card border">
-              <div className="h-12 w-12 bg-primary/10 rounded-lg flex items-center justify-center mx-auto mb-4">
-                <Zap className="h-6 w-6 text-primary" />
-              </div>
-              <h3 className="text-xl font-semibold mb-2">Lightning Fast</h3>
-              <p className="text-muted-foreground">
-                Search and access your code snippets instantly with our fast interface.
-              </p>
-            </div>
-            
-            <div className="text-center p-6 rounded-lg bg-card border">
-              <div className="h-12 w-12 bg-primary/10 rounded-lg flex items-center justify-center mx-auto mb-4">
-                <Shield className="h-6 w-6 text-primary" />
-              </div>
-              <h3 className="text-xl font-semibold mb-2">Secure & Private</h3>
-              <p className="text-muted-foreground">
-                Your code is secure with user authentication and admin moderation.
-              </p>
-            </div>
           </div>
         </div>
       </div>
