@@ -1,13 +1,13 @@
-'use client';
+"use client";
 
-import { useQuery } from '@apollo/client';
-import { gql } from '@apollo/client';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { CodeBlock } from '@/components/code-block';
-import { Download, User, Calendar } from 'lucide-react';
-import { formatDistanceToNow, isValid } from 'date-fns';
+import { useQuery } from "@apollo/client";
+import { gql } from "@apollo/client";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { CodeBlock } from "@/components/code-block";
+import { Download, User, Calendar } from "lucide-react";
+import { formatDistanceToNow, isValid } from "date-fns";
 
 const SNIPPET_QUERY = gql`
   query Snippet($id: String!) {
@@ -51,7 +51,9 @@ export function SnippetDetail({ id }: SnippetDetailProps) {
   if (error || !data?.snippet) {
     return (
       <div className="text-center py-8">
-        <p className="text-muted-foreground">Snippet not found or you don&#39;t have permission to view it.</p>
+        <p className="text-muted-foreground">
+          Snippet not found or you don&#39;t have permission to view it.
+        </p>
       </div>
     );
   }
@@ -60,16 +62,26 @@ export function SnippetDetail({ id }: SnippetDetailProps) {
 
   const handleDownload = () => {
     if (snippet.filePath) {
-      window.open(`http://localhost:4000/download/${snippet.filePath}`, '_blank');
+      fetch(`http://localhost:4000/download/${snippet.filePath}`)
+        .then((response) => {
+          if (!response.ok) throw new Error("Network response was not ok");
+          return response.blob();
+        })
+        .then((blob) => {
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = snippet.fileName || "snippet-file";
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          window.URL.revokeObjectURL(url);
+        })
+        .catch((err) => {
+          alert("Failed to download file.");
+          console.error("Download error:", err);
+        });
     }
-  };
-
-  // Helper to safely format the date
-  const renderCreatedAt = (dateString: string) => {
-    if (!dateString) return 'Unknown date';
-    const date = new Date(dateString);
-    if (!isValid(date)) return 'Invalid date';
-    return formatDistanceToNow(date, { addSuffix: true });
   };
 
   return (
@@ -85,16 +97,16 @@ export function SnippetDetail({ id }: SnippetDetailProps) {
               {snippet.language}
             </Badge>
           </div>
-          
+
           <div className="flex items-center space-x-6 text-sm text-muted-foreground pt-4 border-t">
             <div className="flex items-center space-x-1">
               <User className="h-4 w-4" />
               <span>{snippet.author.email}</span>
             </div>
-            <div className="flex items-center space-x-1">
+            {/* <div className="flex items-center space-x-1">
               <Calendar className="h-4 w-4" />
               <span>{renderCreatedAt(snippet.createdAt)}</span>
-            </div>
+            </div> */}
             {snippet.fileName && (
               <Button
                 variant="outline"
@@ -108,7 +120,7 @@ export function SnippetDetail({ id }: SnippetDetailProps) {
             )}
           </div>
         </CardHeader>
-        
+
         <CardContent>
           <CodeBlock code={snippet.code} language={snippet.language} />
         </CardContent>

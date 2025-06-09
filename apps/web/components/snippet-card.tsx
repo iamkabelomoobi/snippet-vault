@@ -1,8 +1,12 @@
-import Link from 'next/link';
-import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { formatDistanceToNow } from 'date-fns';
-import { Code2, User } from 'lucide-react';
+import Link from "next/link";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { User } from "lucide-react";
 
 interface SnippetCardProps {
   snippet: {
@@ -31,21 +35,25 @@ export function SnippetCard({ snippet }: SnippetCardProps) {
             </Badge>
           </div>
         </CardHeader>
-        
+
         <CardContent className="pb-3">
           <p className="text-muted-foreground line-clamp-3 text-sm">
             {snippet.description}
           </p>
         </CardContent>
-        
+
         <CardFooter className="pt-3 border-t flex items-center justify-between text-xs text-muted-foreground">
           <div className="flex items-center space-x-1">
             <User className="h-3 w-3" />
-            <span>{snippet.author.email.split('@')[0]}</span>
+            <span>{snippet.author.email.split("@")[0]}</span>
           </div>
-          <div className="flex items-center space-x-1">
-            <span>{formatDistanceToNow(new Date(snippet.createdAt), { addSuffix: true })}</span>
-          </div>
+          {/* <div className="flex items-center space-x-1">
+            <span>
+              {snippet.createdAt && !isNaN(new Date(snippet.createdAt).getTime())
+                ? formatDistanceToNow(new Date(snippet.createdAt), { addSuffix: true })
+                : 'Unknown'}
+            </span>
+          </div> */}
         </CardFooter>
       </Card>
     </Link>
