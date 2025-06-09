@@ -9,7 +9,6 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from 'sonner';
 import { Check, X, Eye } from 'lucide-react';
-import { formatDistanceToNow, isValid } from 'date-fns';
 import Link from 'next/link';
 
 const ALL_SNIPPETS_QUERY = gql`
@@ -130,23 +129,6 @@ export function AdminDashboard() {
     </div>
   );
 
-  // Format date with error handling
-  const formatDate = (dateString: string) => {
-    if (!dateString) return "Unknown date";
-    
-    try {
-      const date = new Date(dateString);
-      
-      // Check if it's a valid date
-      if (!isValid(date)) return "Invalid date";
-      
-      return formatDistanceToNow(date, { addSuffix: true });
-    } catch (error) {
-      console.error("Error formatting date:", error);
-      return "Invalid date";
-    }
-  };
-
   const SnippetList = ({ snippets, loading }: { snippets: any[], loading: boolean }) => {
     if (loading) {
       return <div className="text-center py-4">Loading...</div>;
@@ -182,8 +164,7 @@ export function AdminDashboard() {
                     {snippet.description}
                   </p>
                   <div className="flex items-center space-x-4 text-xs text-muted-foreground">
-                    <span>By {snippet.author?.email || 'Unknown'}</span>
-                    <span>{formatDate(snippet.createdAt)}</span>
+                    <span>By {snippet.author.email}</span>
                   </div>
                 </div>
                 <SnippetActions snippet={snippet} />
