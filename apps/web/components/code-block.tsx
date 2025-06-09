@@ -5,6 +5,7 @@ import { useTheme } from 'next-themes';
 import { Button } from '@/components/ui/button';
 import { Copy, Check } from 'lucide-react';
 import { useState } from 'react';
+import { toast } from 'sonner';
 
 interface CodeBlockProps {
   code: string;
@@ -18,6 +19,7 @@ export function CodeBlock({ code, language }: CodeBlockProps) {
   const copyToClipboard = () => {
     navigator.clipboard.writeText(code);
     setCopied(true);
+    toast.success("Copied to clipboard!");
     setTimeout(() => setCopied(false), 2000);
   };
 
