@@ -23,7 +23,7 @@
     "jsonwebtoken": "^9.0.2",
     "mailgen": "^2.0.28",
     "multer": "^2.0.2",
-    "nodemailer": "^6.9.7"
+    "nodemailer": "^10.0.9"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",
